@@ -1,16 +1,17 @@
-package main
+package poker
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 // PlayerStore stores score information about players.
 type PlayerStore interface {
 	GetPlayerScore(name string) int
 	RecordWin(name string)
-	GetLeague() []Player
+	GetLeague() League
 }
 
 // Player stores a name with a number of wins.
@@ -48,7 +49,7 @@ func (p *PlayerServer) leagueHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *PlayerServer) playersHandler(w http.ResponseWriter, r *http.Request) {
-	player := r.URL.Path[len("/players/"):]
+	player := strings.TrimPrefix(r.URL.Path, "/players/")
 
 	switch r.Method {
 	case http.MethodPost:
